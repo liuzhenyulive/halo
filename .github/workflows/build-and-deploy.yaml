@@ -46,11 +46,10 @@ jobs:
         run: |
           make -C console build
       - name: Reset version of Halo
-        if: github.event_name == 'release'
         shell: bash
         run: |
           # Set the version with tag name when releasing
-          version=${{ github.run_id }}
+          version=$(date +%Y-%m-%d)-${{ github.run_id }}
           version=${version#v}
           sed -i "s/version=.*-SNAPSHOT$/version=$version/1" gradle.properties
       - name: Build with Gradle
