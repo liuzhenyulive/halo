@@ -1,0 +1,49 @@
+name: Halo Build and Deploy
+
+on:
+  pull_request:
+    branches:
+      - "*"
+    paths:
+      - "**"
+      - "!**.md"
+  push:
+    branches:
+      - "*"
+    paths:
+      - "**"
+      - "!**.md"
+  release:
+    types:
+      - created
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          cache: 'gradle'
+          java-version: 17
+      - name: Build Console
+        shell: bash
+        run: |
+          make -C console build
+      - name: Reset version of Halo
+        if: github.event_name == 'release'
+        shell: bash
+        run: |
+          # Set the version with tag name when releasing
+          version=${{ github.run_id }}
+          version=${version#v}
+          sed -i "s/version=.*-SNAPSHOT$/version=$version/1" gradle.properties
+      - name: Build with Gradle
+        shell: bash
+        run: |
+          ./gradlew downloadPluginPresets
+          ./gradlew clean build -x check
