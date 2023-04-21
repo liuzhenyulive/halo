@@ -38,6 +38,7 @@ jobs:
       
       - name: Install Console dependence
         shell: bash
+        working-directory: ./console
         run: |
           pnpm install  
                 
