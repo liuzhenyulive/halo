@@ -69,4 +69,11 @@ jobs:
         shell: bash
         working-directory: ./app
         run: |
-          java -Djarmode=layertools -jar application.jar extract    
+          java -Djarmode=layertools -jar application.jar extract
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: service-artifact
+          path: |
+            app          
