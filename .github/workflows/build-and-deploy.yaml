@@ -36,6 +36,11 @@ jobs:
       - name: Setup console environment
         uses: halo-sigs/actions/admin-env-setup@main
       
+      - name: Install Console dependence
+        shell: bash
+        run: |
+          pnpm install  
+                
       - name: Build Console
         shell: bash
         run: |
