@@ -57,3 +57,16 @@ jobs:
         run: |
           ./gradlew downloadPluginPresets
           ./gradlew clean build -x check
+
+      - name: Make work dir
+        shell: bash
+        working-directory: ./
+        run: |
+          mkdir app
+          cp application/build/libs/*.jar app/application.jar
+
+      - name: Extract jar
+        shell: bash
+        working-directory: ./app
+        run: |
+          java -Djarmode=layertools -jar application.jar extract    
