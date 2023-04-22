@@ -6,8 +6,6 @@ on:
       tag:
         description: 'The tag to be used in the workflow'
         required: true
-        default: ${{ github.ref }}
-        options: ${{ join(github.event.repository.tags.*.name, "\n") }}
 
 jobs:
   Build_And_Deploy:
