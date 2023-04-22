@@ -83,10 +83,10 @@ jobs:
         working-directory: ./
         run: |
           mkdir deploy
-          cp app/dependencies/* ./deploy
-          cp app/spring-boot-loader/ ./deploy
-          cp app/snapshot-dependencies/ ./deploy
-          cp app/application/ ./deploy
+          cp -r app/dependencies/* ./deploy
+          cp -r app/spring-boot-loader/* ./deploy
+          cp -r app/snapshot-dependencies/* ./deploy
+          cp -r app/application/* ./deploy
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v3
