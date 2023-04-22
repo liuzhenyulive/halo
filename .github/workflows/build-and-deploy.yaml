@@ -79,7 +79,7 @@ jobs:
       #       app      
       
       - name: Prepare deploy package
-        shell: bask
+        shell: bash
         working-directory: ./
         run: |
           mkdir deploy
