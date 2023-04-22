@@ -1,0 +1,92 @@
+name: Halo Build and Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'The tag to be used in the workflow'
+        required: true
+
+jobs:
+  Build_And_Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.tag }}
+          submodules: true
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          cache: 'gradle'
+          java-version: 17
+
+      - name: install rsync
+        run: |
+          sudo apt-get update && sudo apt-get -y install rsync
+
+      - name: Setup console environment
+        uses: halo-sigs/actions/admin-env-setup@main
+      
+      - name: Install Console dependence
+        shell: bash
+        run: |
+          make -C console install
+                
+      - name: Build Console
+        shell: bash
+        run: |
+          make -C console build
+      - name: Reset version of Halo
+        shell: bash
+        run: |
+          # Set the version with tag name when releasing
+          version=$(date +%Y-%m-%d)-${{ github.run_number }}
+          version=${version#v}
+          sed -i "s/version=.*-SNAPSHOT$/version=$version/1" gradle.properties
+      - name: Build with Gradle
+        shell: bash
+        run: |
+          ./gradlew downloadPluginPresets
+          ./gradlew clean build -x check
+
+      - name: Make work dir
+        shell: bash
+        working-directory: ./
+        run: |
+          mkdir app
+          cp application/build/libs/*.jar app/application.jar
+
+      - name: Extract jar
+        shell: bash
+        working-directory: ./app
+        run: |
+          java -Djarmode=layertools -jar application.jar extract
+
+      # - name: Archive artifacts
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: service-artifact
+      #     path: |
+      #       app      
+      
+      - name: Prepare deploy package
+        shell: bash
+        working-directory: ./
+        run: |
+          mkdir deploy
+          rsync -r --ignore-missing-args app/dependencies/* ./deploy
+          rsync -r --ignore-missing-args app/spring-boot-loader/* ./deploy
+          rsync -r --ignore-missing-args app/snapshot-dependencies/* ./deploy
+          rsync -r --ignore-missing-args app/application/* ./deploy
+
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: service-artifact
+          path: |
+            deploy    
