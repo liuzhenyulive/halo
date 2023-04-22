@@ -71,9 +71,26 @@ jobs:
         run: |
           java -Djarmode=layertools -jar application.jar extract
 
+      # - name: Archive artifacts
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: service-artifact
+      #     path: |
+      #       app      
+      
+      - name: Prepare deploy package
+        shell: bask
+        working-directory: ./
+        run: |
+          mkdir deploy
+          cp app/dependencies/* ./deploy
+          cp app/spring-boot-loader/ ./deploy
+          cp app/snapshot-dependencies/ ./deploy
+          cp app/application/ ./deploy
+
       - name: Archive artifacts
         uses: actions/upload-artifact@v3
         with:
           name: service-artifact
           path: |
-            app          
+            deploy    
