@@ -1,29 +1,22 @@
 name: Halo Build and Deploy
 
 on:
-  pull_request:
-    branches:
-      - "*"
-    paths:
-      - "**"
-      - "!**.md"
-  push:
-    branches:
-      - "*"
-    paths:
-      - "**"
-      - "!**.md"
-  release:
-    types:
-      - created
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'The tag to be used in the workflow'
+        required: true
+        default: ${{ github.ref }}
+        options: ${{ join(github.event.repository.tags.*.name, "\n") }}
 
 jobs:
   Build_And_Deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
+          ref: ${{ github.event.inputs.tag }}
           submodules: true
 
       - name: Set up JDK 17
