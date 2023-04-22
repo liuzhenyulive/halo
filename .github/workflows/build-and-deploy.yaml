@@ -33,6 +33,10 @@ jobs:
           cache: 'gradle'
           java-version: 17
 
+      - name: install rsync
+        run: |
+          sudo apt-get update && sudo apt-get -y install rsync
+
       - name: Setup console environment
         uses: halo-sigs/actions/admin-env-setup@main
       
@@ -83,10 +87,11 @@ jobs:
         working-directory: ./
         run: |
           mkdir deploy
-          cp -r app/dependencies/* ./deploy
-          cp -r app/spring-boot-loader/* ./deploy
-          cp -r app/snapshot-dependencies/* ./deploy
-          cp -r app/application/* ./deploy
+          rsync -r --ignore-missing-args app/dependencies/* ./deploy
+          rsync -r --ignore-missing-args app/spring-boot-loader/* ./deploy
+          rsync -r --ignore-missing-args app/snapshot-dependencies/* ./deploy
+          rsync -r --ignore-missing-args app/application/* ./deploy
+
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v3
