@@ -51,7 +51,12 @@ public enum AttachmentType implements ValueEnum<Integer> {
     /**
      * MINIO
      */
-    MINIO(8);
+    MINIO(8),
+
+    /**
+     * AWSS3
+     */
+    AWSS3(9);
 
     private final Integer value;
 
