@@ -76,6 +76,7 @@ ext {
     embeddedRedisVersion = '0.6'
     diffUtilsVersion = '4.11'
     commonsImagingVersion = "1.0-alpha3"
+    awsS3SdkVersion = "1.12.454"
 }
 
 dependencies {
@@ -92,6 +93,7 @@ dependencies {
     implementation "com.upyun:java-sdk:$upyunSdkVersion"
     implementation "com.qiniu:qiniu-java-sdk:$qiniuSdkVersion"
     implementation "com.aliyun.oss:aliyun-sdk-oss:$aliyunSdkVersion"
+    implementation "com.amazonaws:aws-java-sdk-s3:$awsS3SdkVersion"
     implementation "com.baidubce:bce-java-sdk:$baiduSdkVersion"
     implementation "com.qcloud:cos_api:$qcloudSdkVersion"
     // TODO Upgrade huaweicloud sdk dependence to fix log4j 0-day vulnerability
@@ -143,7 +145,7 @@ dependencies {
     }
     testImplementation "org.jsoup:jsoup:$jsoupVersion"
 
-    testImplementation ("com.github.kstyrc:embedded-redis:$embeddedRedisVersion") {
+    testImplementation("com.github.kstyrc:embedded-redis:$embeddedRedisVersion") {
         exclude group: 'org.slf4j', module: 'slf4j-simple'
     }
 
